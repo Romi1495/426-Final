@@ -7,54 +7,137 @@
         <title>Who Wins?</title>
 
         <!-- Include links to CSS stylesheets below -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.min.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.0/css/bulma.min.css" />
         <link rel="stylesheet" href="styles.css" />
     </head>
 
     <body>
-        <div class="columns">
-          <div class="column has-background-info is-half">
-            <div id="blueTeam" class="columns is-multiline">
-              <div id="blueTOP" class="column is-full">
-
-              </div>
-              <div id="blueJUNGLE" class="column is-full">
-
-              </div>
-              <div id="blueMIDDLE" class="column is-full">
-
-              </div>
-              <div id="blueBOTTOM" class="column is-full">
-
-              </div>
-              <div id="blueUTILITY" class="column is-full">
-
-              </div>
-            </div>
+      <button style="display: none;" class="button hover is-rounded" id="playAgain">
+        <p class="has-text-info title"> Play Again </p>
+        <p class="subtitle is-4" id="message"></p>
+      </button>
+      <div id="navbar" class="navbar is-spaced">
+        <div class="navbar-start">
+          <div class="navbar-item">
+            <p class="title"> Who Will Win? </p>
           </div>
-          <div class="column has-background-danger is-half">
-            <div id="redTeam" class="columns is-multiline">
-              <div id="redTOP" class="column is-full">
-
-              </div>
-              <div id="redJUNGLE" class="column is-full">
-
-              </div>
-              <div id="redMIDDLE" class="column is-full">
-
-              </div>
-              <div id="redBOTTOM" class="column is-full">
-
-              </div>
-              <div id="redUTILITY" class="column is-full">
-
-              </div>
+          <div style="padding-left: 120%;" class="navbar-item">
+            <p class="title is-4"> Current Points: <span id="curPoints"> 0000 </span></p>
+          </div>
+        </div>
+        <div class="navbar-end">
+          <div class="navbar-item">
+            <div class="buttons">
+              <a id="swapTheme" class="button hover is-black">
+                <strong>Go Dark</strong>
+              </a>
+              <a id="signUp" class="button hover is-info">
+                <strong>Sign up</strong>
+              </a>
+              <a id="logIn" class="button hover is-danger">
+                <strong>Log in</strong>
+              </a>
             </div>
           </div>
         </div>
-        <!-- Include links to JavaScript files below -->
+      </div>
+      <div id="signModal" class="modal">
+        <div class="hide modal-background"></div>
+        <div style="border-radius: 20px;" class="modal-content">
+          <div id="modalSec" class="section has-background-white">
+            <div id="usernameField" class="field">
+              <label class="label">Username</label>
+              <div class="control has-icons-left has-icons-right">
+                <input id="usernameInput" class="input" type="text" placeholder="Text input">
+                <span class="icon is-small is-left">
+                  <i class="fas fa-user"></i>
+                </span>
+              </div>
+            </div>
+            
+            <div id="emailField" class="field">
+              <label class="label">Email</label>
+              <div class="control has-icons-left has-icons-right">
+                <input id="emailInput" class="input" type="email" placeholder="Email input">
+                <span class="icon is-small is-left">
+                  <i class="fas fa-envelope"></i>
+                </span>
+                <span style="display: none;" id="emailCheck" class="icon has-text-primary is-small is-right">
+                  <i class="fas fa-check"></i>
+                </span>
+              </div>
+            </div>
+                        
+            <div id="passwordField" class="field">
+              <label class="label">Password</label>
+              <div class="control has-icons-left has-icons-right">
+                <input id="passwordInput" class="input" type="password" placeholder="Text input">
+                <span class="icon is-small is-left">
+                  <i class="fas fa-key"></i>
+                </span>
+                <span style="display: none;" id="passwordCheck" class="icon has-text-primary is-small is-right">
+                  <i class="fas fa-check"></i>
+                </span>
+              </div>
+            </div>
+
+            <div class="field is-grouped">
+              <div class="control">
+                <button id="sendSign" class="button hover is-info">Submit</button>
+              </div>
+              <div class="control">
+                <button id="cancelSign" class="button hide hover is-info">Cancel</button>
+              </div>
+              <div style="margin-left: 20px;" class="columns is-desktop is-vcentered">
+                <p id="error" class="subtitle has-text-weight-medium has-text-danger"></p>
+              </div>
+            </div>
+          </div>
+          </div>
+          
+        <button class="hover hide modal-close is-large" aria-label="close"></button>
+    </div>
+      <div id="mainCol" class="columns">
+        <div id="blueTeam" class="hover column main has-background-info is-half">
+          <div id="blueCol" class="team columns is-vcentered is-multiline">
+          </div>
+        </div>
+        <div id="redTeam" class="hover column main has-background-danger is-half">
+          <div id="redCol" class="team columns is-vcentered is-multiline">
+          </div>
+        </div>
+      </div>
+        <script src="https://www.gstatic.com/firebasejs/8.5.0/firebase-app.js"></script>
+
+        <!-- If you enabled Analytics in your project, add the Firebase SDK for Analytics -->
+        <script src="https://www.gstatic.com/firebasejs/8.5.0/firebase-analytics.js"></script>
+
+        <!-- Add Firebase products that you want to use -->
+        <script src="https://www.gstatic.com/firebasejs/8.5.0/firebase-auth.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.5.0/firebase-database.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.5.0/firebase-firestore.js"></script>
+
+        <script>
+          // Your web app's Firebase configuration
+          // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+          apiKey: "AIzaSyBvEKw5u4deI1LMAgBYtnyqp5WbHOkq3JI",
+          authDomain: "final-a6dc0.firebaseapp.com",
+          databaseURL: "https://final-a6dc0-default-rtdb.firebaseio.com",
+          projectId: "final-a6dc0",
+          storageBucket: "final-a6dc0.appspot.com",
+          messagingSenderId: "389491623647",
+          appId: "1:389491623647:web:61ebabdef31daa6f070b6a",
+          measurementId: "G-TQ5G8FN1ZY"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        firebase.analytics();
+        </script>
         <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-        <script src="script.js"></script>
+        <script type="module" src="script.js"></script>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
         <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     </body>
 </html>

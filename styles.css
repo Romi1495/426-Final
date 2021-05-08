@@ -1,3 +1,29 @@
-.column {
-    padding: 20px;
+.main {
+    padding: 40px;
+}
+#mainCol {
+    height: 100vh;
+}
+.hover {
+    transition: transform 250ms;
+}
+.hover:hover {
+    transform: scale(1.05, 1.05);
+}
+.darkMode {
+    background-color: black;
+}
+#navbar {
+    width: 100%;
+    white-space: nowrap;
+}
+#playAgain {
+    z-index: 99; 
+    width: 250px;
+    height: 100px;
+    top: 50%;
+    left: 50%;
+    margin-top: -100px;
+    margin-left: -125px; 
+    position: fixed; 
 }

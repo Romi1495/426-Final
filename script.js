@@ -144,9 +144,13 @@ function hideModal() {
     document.getElementById("usernameField").style.display = "block";
     $(`.is-right`).hide();
     $(`#sendSign`).off();
-    $(`#error`).html();
+    $(`#error`).html("");
 }
 function signUp() {
+    if ($(`#emailInput`).val().length < 8 || !checkValid($(`#passwordInput`))) {
+        $(`#error`).html("Please enter a valid password");
+        return;
+    }
     firebase.auth().createUserWithEmailAndPassword($("#emailInput").val(), $("#passwordInput").val()).then(regUser => {
         database.ref('users/' + regUser.user.uid).set({
             username: $(`#usernameInput`).val(),
@@ -156,9 +160,6 @@ function signUp() {
         $(`#signUp`).html(`<strong> Logged In: ${$(`#usernameInput`).val()} </strong>`);
         $(`#signUp`).attr("disabled", "true");
         $(`#logIn`).html("<strong> Log Out </strong>");
-        $('#emailInput').on('input', () => {
-            checkValid($(`#emailInput`));
-        });
         signedIn = true;
         hideModal();
     })
@@ -179,6 +180,10 @@ function signUp() {
     });
 }
 function logIn() {
+    if ($(`#emailInput`).val().length < 8 || !checkValid($(`#passwordInput`))) {
+        $(`#error`).html("Please enter a valid password");
+        return;
+    }
     firebase.auth().signInWithEmailAndPassword($(`#emailInput`).val(), $(`#passwordInput`).val())
     .then((userCredential) => {
         var user = userCredential.user;
@@ -195,12 +200,22 @@ function logIn() {
             }
         }
         })
+        hideModal();
     })
     .catch((error) => {
-    var errorCode = error.code;
-    var errorMessage = error.message;
+        let message = $(`#error`);
+        console.log(error.code);
+        switch (error.code) {
+            case "auth/user-not-found":
+                message.html("Invalid email/password combination")
+                break;
+            case "auth/wrong-password":
+                message.html("Wrong Password!")
+                break;
+        }
+        console.log(error.message);
+        return;
     });
-    hideModal();
 }
 function swapTheme() {
     if (darkMode) {        
